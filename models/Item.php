@@ -72,10 +72,47 @@ class Item
                 $row['itemname'], (int)$row['catid'],
                 (int)$row['pricein'], (int)$row['pricesale'],
                 $row['info'], $row['imagepath'],
-                (float)$row['rate'], (int)$row['action']
+                (float)$row['rate'], (int)$row['action'],
+                $row['id']
             );
         }
         return $items;
+    }
+
+    public static function getAllItems(): array
+    {
+        $pdo = Tools::connect();
+
+        $ps = $pdo->query('SELECT * FROM items ORDER BY id')->fetchAll();
+
+        $items = [];
+
+        foreach($ps as $row) {
+            $items[] = new static(
+                $row['itemname'], (int)$row['catid'],
+                (int)$row['pricein'], (int)$row['pricesale'],
+                $row['info'], $row['imagepath'],
+                (float)$row['rate'], (int)$row['action'],
+                $row['id']
+            );
+        }
+        
+        return $items;
+    }
+
+    public static function updateItemImg(int $id, string $imagepath): true|int|string {
+        try {
+            $pdo = Tools::connect();
+
+            $ps = $pdo->prepare('UPDATE items set imagepath = :imagepath WHERE id = :id');
+            $ps->execute([
+                'imagepath' => $imagepath,
+                'id'        => $id
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            return ($e->errorInfo[1] ?? 0) === 1062 ? 1062 : $e->getMessage();
+        }
     }
 
     // A schematic item card - design your own version
@@ -87,7 +124,7 @@ class Item
 
         echo <<<HTML
         <div class="col-md-3">
-            <div class="card" style="width: 18rem; height: 24rem;">
+            <div class="card">
                 <div class="card-body">
                     <h5 class="card-title text-center">
                         <a href="pages/iteminfo.php?id={$this->id}" target="_blank" class="text-decoration-none">{$name}</a>
@@ -103,5 +140,23 @@ class Item
             </div>
         </div>
         HTML;
+    }
+
+    public function sale(): void
+    {
+        $pdo = Tools::connect();
+        $ruser = $_SESSION['reg'] ?? 'cart';
+
+        // increase the customer's total...
+        $pdo->prepare('UPDATE customers SET total = total + ? WHERE login = ?')
+            ->execute([$this->pricesale, $ruser]);
+
+        // ...record the sale..
+        $pdo->prepare('INSERT INTO sales (customername, itemname, pricein, pricesale, datesale)
+                        VALUES(?, ?, ?, ?, ?)')
+            ->execute([$ruser, $this->itemname, $this->pricein, $this->pricesale, new DateTimeImmutable()->format('Y-m-d')]);
+
+        // ...and remove the sold item
+        $pdo->prepare('DELETE FROM items WHERE id = ?')->execute([$this->id]);
     }
 }

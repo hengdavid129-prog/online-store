@@ -58,57 +58,20 @@ declare(strict_types=1);
         </div>
         <hr>
         <h5>Item Images</h5>
+        <div class="row gx-3 gy-2 align-items-center">
+            <div class="col-12">
+                <select id="itemid" class="form-control">
+                    <option value="" selected>Choose Item...</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <input type="file" class="form-control" id="addimagepath" name="addimagepath">
+            </div>
+            <div class="col-12">
+                <button class="btn btn-info" id="addImgBtn">Add Images</button>
+            </div>
+        </div>
     </div>
 </div>
 <script type="module" src="/js/admin/category.js"></script>
 <script type="module" src="/js/admin/item.js"></script>
-
-<script>
-    // const input = document.getElementById('category');
-    // const message = document.getElementById('message');
-    // const rows = document.getElementById('catRows');
-
-    // async function ask(data) {
-    //     const response = await fetch('api/categories.php', {method: 'POST', body: data});
-    //     const answer = await response.json();
-
-    //     message.textContent = answer.message;
-    //     message.className = answer.ok ? 'text-success' : 'text-danger';
-
-    //     return answer;
-    // }
-
-    // function renumber() {
-    //     [...rows.rows].forEach((row, i) => row.cells[0].textContent = i + 1);
-    // }
-
-    // document.getElementById('addBtn').addEventListener('click', async () => {
-    //     const data = new FormData();
-    //     data.append('action', 'add');
-    //     data.append('category', input.value);
-
-    //     const answer = await ask(data);
-    //     if (!answer.ok) return;
-
-    //     const row = rows.insertRow();
-    //     row.insertCell().textContent = rows.rows.length;
-    //     row.insertCell().textContent = answer.category;
-    //     row.insertCell().innerHTML = `<input type="checkbox" class="form-check" value="${answer.id}">`;
-
-    //     input.value = '';
-    // });
-
-    // document.getElementById('delBtn').addEventListener('click', async () => {
-    //     const checked = [...rows.querySelectorAll('input:checked')];
-
-    //     const data = new FormData();
-    //     data.append('action', 'delete');
-    //     checked.forEach(box => data.append('ids[]',box.value));
-
-    //     const answer = await ask(data);
-    //     if (!answer.ok) return;
-
-    //     checked.forEach(box => box.closest('tr').remove());
-    //     renumber();
-    // })
-</script>

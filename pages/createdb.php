@@ -8,7 +8,7 @@ $pdo = Tools::connect();
 //     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 //     role VARCHAR(32) NOt NULL UNIQUE
 // ) DEFAULT CHARSET = utf8mb4');
-// echo "table roles created";
+// echo "Table roles created";
 
 // $pdo->exec('CREATE TABLE customers (
 //     id          INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -19,7 +19,7 @@ $pdo = Tools::connect();
 //     total       INT,
 //     imagepath   VARCHAR(255)
 // ) DEFAULT CHARSET = utf8mb4');
-// echo "table customers created";
+// echo "Table customers created";
 
 // ...categories, items, images, sales - same pattern...
 
@@ -27,7 +27,7 @@ $pdo = Tools::connect();
 //     id          INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 //     category    VARCHAR(32) NOT NULL UNIQUE
 // ) DEFAULT CHARSET = utf8mb4');
-// echo "table categories created <br>";
+// echo "Table categories created <br>";
 
 // $pdo->exec('CREATE TABLE items (
 //     id          INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -40,7 +40,17 @@ $pdo = Tools::connect();
 //     rate        FLOAT,
 //     action      INT
 // ) DEFAULT CHARSET = utf8mb4');
-// echo "table items created <br>";
+// echo "Table items created <br>";
+
+$pdo->exec('CREATE TABLE sales (
+    id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    customername    VARCHAR(32) NOT NULL,
+    itemname        VARCHAR(32) NOT NULL,
+    pricein         INT,
+    pricesale       INT,
+    datasale        DATE
+) DEFAULT CHARSET = utf8mb4');
+echo "table sales created <br>";
 
 // the Customer class relies on role ids 1 (Admin) 2 (Customer):
 // $pdo->exec("INSERT INTO roles (role) VALUES ('Admin'), ('Customer')");

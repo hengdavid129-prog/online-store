@@ -6,6 +6,9 @@ const description = document.getElementById('description');
 const imagePath = document.getElementById('imagepath');
 const addItemBtn = document.getElementById('addItemBtn');
 const message = document.getElementById('message');
+const SelectItem = document.getElementById('itemid');
+const addImgBtn = document.getElementById('addImgBtn');
+const addImagePath = document.getElementById('addimagepath');
 
 async function getCategory() {
     const params = new URLSearchParams({
@@ -85,5 +88,61 @@ addItemBtn.addEventListener('click', async () => {
         message.className = 'text-danger';
     } finally {
         addItemBtn.disable = false;
+    }
+});
+
+async function getItems() {
+   const params = new URLSearchParams({
+        action: 'all'
+   })
+
+   const response = await fetch(`/api/items.php?${params}`, {
+        method: 'GET',
+        headers: {'Accept': 'application/json'}
+   })
+
+   if (!response.ok) {
+        throw new Error(`Http error! Status: ${response.status}`);
+   }
+
+   const answer = await response.json();
+   return answer.items;
+}
+
+try {
+    (await getItems()).forEach($item => {
+        const option = document.createElement('option');
+        option.value = $item.id;
+        option.textContent = $item.itemname;
+        SelectItem.add(option);
+    });
+} catch (error) {
+    console.error('Error fetching items:', error);
+}
+
+addImgBtn.addEventListener('click', async () => {
+    try {
+        const data = new FormData();
+        data.append('action', 'updateimg');
+        data.append('id', SelectItem.value);
+        data.append('imagepath', addImagePath.files[0])
+
+        const response = await fetch(`/api/items.php`, {method: 'POST', body: data});
+        const answer = await response.json();
+
+        message.textContent = answer.message;
+        message.className = answer.ok ? 'text-success' : 'text-danger';
+        if (answer.ok) {
+            SelectItem.value = '';
+            addImagePath.value = '';
+        }
+        addImgBtn.disable = true
+    } catch (error) {
+        console.error('Error talking to the server:', error);
+
+        message.textContent = 'Something went wrong. Please try again';
+        message.className = 'text-danger';
+    } finally {
+        addImgBtn.disable = false;
     }
 });

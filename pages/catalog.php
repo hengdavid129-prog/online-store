@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="row" id="result">
+<div class="row gy-3" id="result">
     <?php foreach (Item::getItems() as $item) { $item->draw(); } ?>
 </div>
 
